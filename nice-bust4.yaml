@@ -2,39 +2,24 @@
 #test on Wemos D1 mini
 
 substitutions:
-  device_name: "nice-robus-400-bust4-uart"
-  device_name_friendly: "Nice Robus 400"
-  api_password: !secret     wt32_eth01_api_password
-  ota_password: !secret     wt32_eth01_ota_password
-  mqtt_broker_address: !secret   mqtt_broker_address
-  led_gpio:                 GPIO2
-  DS18B20_pin:              GPIO4
-  light_relay_pin:          GPIO14
+  device_name: "einfahrtstor"
+  device_name_friendly: "Einfahrtstor"
+  api_password: t0cAaLq0mvRrCxudU6nerQbc5rsG+9RsEPq4C4lUFt0=
+  ota_password: 57c372c6feca97fbdc3faf740d25f3b9
+  #mqtt_broker_address: !secret   mqtt_broker_address
+  led_gpio:                 GPIO4
+  #DS18B20_pin:              GPIO4
+  #light_relay_pin:          GPIO14
   #device_ip: 192.168.5.60
 
-# esphome:
-  # name: ${device_name}
-  # friendly_name: ${device_name_friendly}
+esphome:
+  name: ${device_name}
+  friendly_name: ${device_name_friendly}
 
 
-esp32:
-  board: wt32-eth01
-  # board: esp32dev
-  framework:
-    type: arduino
+esp8266:
+  board: d1_mini
 
-ethernet:
-  type: LAN8720
-  mdc_pin: GPIO23
-  mdio_pin: GPIO18
-  clk_mode: GPIO0_IN
-  phy_addr: 1
-  power_pin: GPIO16
-  #Optional manual IP
-  #manual_ip:
-  #  static_ip: $device_ip
-  #  gateway: $network_gateway
-  #  subnet: $network_subnet
   
 # Enable logging
 logger:
@@ -63,17 +48,17 @@ web_server:
 external_components:
   - source:
       type: git
-      url: https://github.com/karol27/Nice_BusT4_WT32-ETH01
+      url: https://github.com/MrCruiser251/Nice_BusT4
     refresh: 0s
 
-#wifi:
-#  ssid: !secret wifi_ssid
-#  password: !secret wifi_password
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
-#  # Enable fallback hotspot (captive portal) in case wifi connection fails
-#  ap:
-#    ssid: "Nice Fallback Hotspot"
-#    password: "SKXZ6FPAdwIC"
+# Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Einfahrtstor Fallback Hotspot"
+    password: "ApdSx2zNdP0Z"
 
 # captive_portal:
 
@@ -212,7 +197,7 @@ button:
 
 switch:
   - platform: restart
-    name: "Nice WT32-ETH01 Restart"
+    name: "Einfahrtstor Restart"
 
 # # disable automatic closing of the gate, if necessary for loading and unloading operations?
 # #auto_close & close_ater_photo
@@ -240,9 +225,9 @@ switch:
 #         my_nice_cover -> NiceBusT4::send_inf_cmd("0003", "04", "80", "99", "00", true, "01");
 #         my_nice_cover -> NiceBusT4::send_inf_cmd("0003", "04", "84", "99", "00", true, "01");                
 
-  - platform: gpio
-    name: "Swiatlo brama"
-    pin: ${light_relay_pin}
+#  - platform: gpio
+#    name: "Swiatlo brama"
+#    pin: ${light_relay_pin}
 
   - platform: template
     name: "l1L1 - Auto close" #l1L2 - level 1, option L2
@@ -495,9 +480,7 @@ cover:
 #             - script.execute: loop_script
 
 
-esphome:
-  name: ${device_name}
-  friendly_name: ${device_name_friendly}
+
  
   # on_boot:
   #   priority: -10
@@ -703,9 +686,9 @@ select:
 
     set_action: 
       then:
-        # - logger.log: "wybrano opcję"
+        # - logger.log: "Option ausgewählt"
         - logger.log: 
-            format: "wybrano opcję %s"
+            format: "Option ausgewählt %s"
             args: [ "x.c_str()" ]
         # - lambda: |-
         #     std::string sbs_mode_variable;
