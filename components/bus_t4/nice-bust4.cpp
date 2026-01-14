@@ -117,7 +117,7 @@ void NiceBusT4::loop() {
 
 
   while (uart_rx_available(_uart) > 0) {
-    uint8_t c = (uint8_t)uart_Read(_uart);                // read the byte for ESP8266
+    uint8_t c = (uint8_t)uart_read_char(_uart);                // read the byte for ESP8266
     //uint8_t c = (uint8_t)uartRead(_uart);                // read the byte for ESP32
     this->handle_char_(c);                                     // send the byte for processing
     this->last_uart_byte_ = now;
@@ -1115,15 +1115,15 @@ void NiceBusT4::send_array_cmd(const uint8_t *data, size_t len) {
   // sending data to uart
 
   char br_ch = 0x00;                            // for break
-  uartFlush(_uart);                             // clear uart
-  uartSetBaudRate(_uart, BAUD_BREAK);           // lower the body rate
+  uart_flush(_uart);                             // clear uart
+  uart_set_baudrate(_uart, BAUD_BREAK);           // lower the body rate
   uart_write(_uart, &br_ch, 1);               // for ESP8266                     // send zero at low speed, long zero
   //uart_write_bytes(UART_NUM_1, &br_ch, 1);      // for ESP32    // send zero at low speed, long zero
   //uart_write(_uart, (char *)&dummy, 1);
   uart_wait_tx_empty(_uart);                  // for ESP8266   // We wait until the sending is completed. There is an error here in the uart.h library (esp8266 core 3.0.2), waiting is not enough for further uart_set_baudrate().
   //uart_wait_tx_done(UART_NUM_1,100);            // for ESP32      // We wait until the sending is completed. There is an error here in the uart.h library (esp8266 core 3.0.2), waiting is not enough for further uart_set_baudrate().
   delayMicroseconds(90);                        // add a delay to the wait, otherwise the speed will switch before sending. With delay on d1-mini I got a perfect signal, break = 520us
-  uartSetBaudRate(_uart, BAUD_WORK);            // we return the working body rate
+  uart_set_baudrate(_uart, BAUD_WORK);            // we return the working body rate
   uart_write(_uart, (char *)&data[0], len);             // for ESP8266   // send the main package
   //uart_write_bytes(UART_NUM_1, (char *)&data[0], len);    // for ESP32      // send the main package
   //uart_write(_uart, (char *)raw_cmd_buf, sizeof(raw_cmd_buf));
